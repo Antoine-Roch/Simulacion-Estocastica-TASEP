@@ -11,14 +11,6 @@ from utils.MoveLey import *
 from utils.InitialLey import *
 from utils.Grid import *
 
-"""
-Updates to go:
-    -Move laws: left + multi
-"""
-
-
-
-
 
 if __name__ == '__main__':
     
