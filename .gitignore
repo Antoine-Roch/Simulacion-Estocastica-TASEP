@@ -1,2 +1,5 @@
 img/
 .ipynb_checkpoints/
+test_file.ipynb
+result/
+utils/__pycache__

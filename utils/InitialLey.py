@@ -6,17 +6,7 @@ class Initial_Ley:
         self.x_coord = np.array(x_coordinates)
         self.y_coord = np.array(y_coordinates)
         self.sparsity = sparsity
-
-        self._verify_problem()
         self._choose_ley()
-
-    def _verify_problem(self):
-        name = self.ley_name.split("_")[1]
-        assert not(self.x_coord.shape[0] == 1 and self.y_coord.shape[0] == 0 and name == "multi"), "Error in the choice of uni/multi dimensional problem"
-        assert not(self.x_coord.shape[0] + self.y_coord.shape[0] > 1 and name == "uni"), "Error in the choice of uni/multi dimensional problem"
-        assert not(self.x_coord.shape[0] == 0), "Can't choose not to have x axis"
-        assert not((np.unique(self.x_coord, return_counts = True)[1]>1).any()), "Can't have multiple times the same x axis"
-        assert not((np.unique(self.y_coord, return_counts = True)[1]>1).any()), "Can't have multiple times the same y axis"
              
 
     def _uniform_uni(self, N):

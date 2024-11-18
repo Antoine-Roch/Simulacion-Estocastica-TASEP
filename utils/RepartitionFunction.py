@@ -129,3 +129,47 @@ class Repartition_Function:
 
     def __call__(self, sequence_list, save_path):
         self.plot_func(sequence_list, save_path)
+
+class RepartitionFuncion2:
+    def __init__(self, case):
+        self.case = case
+        self.plot_func = self._choose_plot_func()
+
+    def _find_pos(self, old_frame, new_frame):
+        N = len(new_frame) - len(old_frame)
+        i1 = 0; i2 = 0
+        out = np.empty(N)
+        count = 0
+        while count < N:
+            if new_frame[i1] - old_frame[i2] > 1:
+                pass
+
+            
+    def _plot_uni(self, sequence_list, save_path):
+        x_min = np.min(sequence_list); x_max = np.max(sequence_list)
+        altitude = np.zeros((x_max - x_min + 1, len(sequence_list[-1])))
+        current_size = len(sequence_list[0])
+        index = np.arange(current_size)
+        for frame in sequence_list:
+            if len(frame) == current_size:
+                altitude[frame, index] = True
+            else:
+                pass
+        
+    
+    def _plot_multi(self, sequence_list, save_path):
+        raise NotImplementedError
+    
+    def _plot_multi_HD(self, sequence_list, save_path):
+        raise NotImplementedError
+
+    def _choose_plot_func(self):
+        if self.case == "uni":
+            return self._plot_uni
+        elif self.case == "multi":
+            return self._plot_multi
+        elif self.case == "multi_HD":
+            return self._plot_multi_HD
+
+    def __call__(self, sequence_list, save_path):
+        self.plot_func(sequence_list, save_path)

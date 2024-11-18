@@ -6,7 +6,7 @@ from .MoveLey import *
 from .LeyNumberParticules import *
 
 class Grid:
-    def __init__(self, N, initial_dist: Initial_Ley, n_step, move_ley: Move_Ley, ley_N: Ley_Number_Particules, 
+    def __init__(self, N, initial_dist: Initial_Ley, n_step, move_ley: Move_Ley, ley_N: Ley_Number_Particules, case,
                  x_lines = [0], y_lines = [], simul_type = "sequential", verif_mode = False):
         '''
         N: number of initial particules
@@ -30,18 +30,15 @@ class Grid:
         self.ley_N = ley_N
         self.n_step = n_step
         self.move_ley = move_ley
-        if len(y_lines) == 0: 
-            self.check_good_move_ley = [simul_type, "uni"]
-        elif len(y_lines) == 1 and len(x_lines) == 1:
-            self.check_good_move_ley = [simul_type, "multi"]
-        else:
-            self.check_good_move_ley = [simul_type, "multi_HD"]
+        self.simul_type = simul_type
+        self.case = case
 
         self.positions = initial_dist(N, self.x_coordinates, self.y_coordinates)
         self.func_step = self._choose_step()
         self.positions_record = []
         self.verif_mode = verif_mode
-
+        self.add_pos = []
+        
         self._update_neighbours()
 
     def _step_sequential_bis(self):
@@ -50,14 +47,14 @@ class Grid:
             self.positions[k] = np.copy(self.move_ley(self.positions[k], k, self.positions))
 
     def _update_neighbours(self):
-        if self.check_good_move_ley[1] == "uni":
+        if self.case == "uni":
             self.dist = self.positions[1:] - self.positions[:-1]
-        elif self.check_good_move_ley[1] == "multi":
+        elif self.case == "multi":
             self.dist = []
             self.dist.append(self.positions[0][1:] - self.positions[0][:-1])
             self.dist.append(self.positions[1][1:] - self.positions[1][:-1])
             #WARNING: if two parallel axis are separated of 1, may not work
-        elif self.check_good_move_ley[1] == "multi_HD":
+        elif self.case == "multi_HD":
             self.dist = [[], []]
             for pos in self.positions[0]:
                 self.dist[0].append(pos[1:] - pos[:-1])
@@ -81,12 +78,13 @@ class Grid:
         t = time.time()
         for k in range(self.n_step):
             self.func_step()
-            self.N_particules, self.positions, self.dist = self.ley_N(self.positions, self.dist, self.check_good_move_ley[1], self.N_particules)
+            self.N_particules, self.positions, self.dist, rec = self.ley_N(self.positions, self.dist, self.case, self.N_particules)
             self.positions_record.append(copy.deepcopy(self.positions))
+            self.add_pos.append(rec)
 
             if self.verif_mode:
                 
-                if self.check_good_move_ley[1] == "multi":
+                if self.case == "multi":
                     A = (self.dist[0] == 0).any()
                     B = (self.dist[1] == 0).any()
                     C = np.sum(self.positions[0] == 0) + np.sum(self.positions[1] == 0) > 1
@@ -97,7 +95,7 @@ class Grid:
                         print(k, A, B, C)
                         break
 
-                elif self.check_good_move_ley[1] == "uni":
+                elif self.case == "uni":
                     A = (self.dist == 0).any()
                     if A:
                         print(self.positions_record[-2])
@@ -105,7 +103,7 @@ class Grid:
                         print(k, A)
                         break
                 
-                elif self.check_good_move_ley[1] == "multi_HD":
+                elif self.case == "multi_HD":
                     for d in self.dist[0]:
                         if (d==0).any():
                             print(k, d)
