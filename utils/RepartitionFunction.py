@@ -75,18 +75,19 @@ class Repartition_Function:
 
     def _plot_multi(self, sequence_list, save_path):
         x_min_x, x_min_y, x_max_x, x_max_y, count_arr_x, count_arr_y = self._calc_counts_multi(sequence_list)
-        plt.subplot(1,2,1)
-        plt.scatter(np.arange(x_min_x, x_max_x+1), count_arr_x)
-        plt.xlabel("Case number")
-        plt.ylabel("Number of particles that went through this case")
-        plt.legend("Axis x")
-        plt.grid()
-        plt.subplot(1,2,2)
-        plt.scatter(np.arange(x_min_y, x_max_y+1), count_arr_y)
-        plt.xlabel("Case number")
-        plt.ylabel("Number of particles that went through this case")
-        plt.legend("Axis y")
-        plt.grid()
+        f, axs = plt.subplots(1,2,figsize=(10,7))
+        #axs[0].subplot(1,2,1)
+        axs[0].scatter(np.arange(x_min_x, x_max_x+1), count_arr_x, label = "Axis x")
+        axs[0].set_xlabel("Case number")
+        axs[0].set_ylabel("Number of particles that went through this case")
+        axs[0].legend()
+        axs[0].grid()
+        #axs[1].subplot(1,2,2)
+        axs[1].scatter(np.arange(x_min_y, x_max_y+1), count_arr_y, label = "Axis y")
+        axs[1].set_xlabel("Case number")
+        axs[1].set_ylabel("Number of particles that went through this case")
+        axs[1].legend()
+        axs[1].grid()
 
         plt.savefig(save_path, dpi = 300)
         plt.close()
@@ -96,22 +97,22 @@ class Repartition_Function:
         n_axis_x = bounds_x.shape[0]
         n_axis_y = bounds_y.shape[0]
 
-        fig, ax = plt.subplots(figsize = (10,5))
+        fig, ax = plt.subplots(figsize = (10,4*max(n_axis_x, n_axis_y)))
         
         for k in range(n_axis_x):
             plt.subplot(max(n_axis_x, n_axis_y), 2, 2*k+1)
-            plt.scatter(np.arange(bounds_x[k,0], bounds_x[k,1]+1), count_arr_x[k])
+            plt.scatter(np.arange(bounds_x[k,0], bounds_x[k,1]+1), count_arr_x[k], label = "Axis x - {}".format(k+1))
             plt.xlabel("Case number")
             plt.ylabel("Number of particles that went through this case")
-            plt.legend("Axis x")
+            plt.legend()
             plt.grid()
 
         for k in range(n_axis_y):
             plt.subplot(max(n_axis_x, n_axis_y), 2, 2*(k+1))
-            plt.scatter(np.arange(bounds_y[k,0], bounds_y[k,1]+1), count_arr_y[k])
+            plt.scatter(np.arange(bounds_y[k,0], bounds_y[k,1]+1), count_arr_y[k], label = "Axis y - {}".format(k+1))
             plt.xlabel("Case number")
             plt.ylabel("Number of particles that went through this case")
-            plt.legend("Axis x")
+            plt.legend()
             plt.grid()
 
         plt.tight_layout()

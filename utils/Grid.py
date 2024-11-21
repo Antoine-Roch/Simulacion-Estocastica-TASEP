@@ -4,6 +4,7 @@ import time
 from .InitialLey import *
 from .MoveLey import *
 from .LeyNumberParticules import *
+import tqdm
 
 class Grid:
     def __init__(self, N, initial_dist: Initial_Ley, n_step, move_ley: Move_Ley, ley_N: Ley_Number_Particules, case,
@@ -76,7 +77,7 @@ class Grid:
 
     def run_simulation(self):
         t = time.time()
-        for k in range(self.n_step):
+        for k in tqdm.tqdm(range(self.n_step)):
             self.func_step()
             self.N_particules, self.positions, self.dist, rec = self.ley_N(self.positions, self.dist, self.case, self.N_particules)
             self.positions_record.append(copy.deepcopy(self.positions))
@@ -113,7 +114,7 @@ class Grid:
                             print(k, d)
                             break
             
-        print(time.time() - t)
+        #print(time.time() - t)
 
     def make_movie(self, save_path):
         pass
